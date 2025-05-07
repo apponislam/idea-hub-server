@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+enum IdeaStatus {
+  UNDER_REVIEW
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum VoteType {
+  UPVOTE
+  DOWNVOTE
+}
+
+enum userStatus {
+  ACTIVE
+  BLOCKED
+  DELECTED
+}
+
+model User {
+  id            String     @id @default(uuid())
+  name          String
+  email         String    @unique
+  image         String?
+  password      String   
+  role          Role      @default(MEMBER)
+  status        userStatus   @default(ACTIVE)
+  ideas         Idea[]
+  votes         Vote[]
+  comments      Comment[]
+  payments      Payment[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Idea {
+  id               String       @id @default(uuid())
+  title            String
+  problemStatement String
+  proposedSolution String
+  description      String
+  images           String[]     
+  status           IdeaStatus   @default(DRAFT)
+  isPaid           Boolean      @default(false)
+  price            Float?       
+  creator          User         @relation(fields: [creatorId], references: [id])
+  creatorId        String
+  categories       IdeaCategory[]
+  votes            Vote[]
+  comments         Comment[]
+  payments         Payment[]
+  rejectionFeedback String?     
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model Category {
+  id        String         @id @default(uuid())
+  name      String         @unique
+  ideas     IdeaCategory[]
+  createdAt DateTime       @default(now())
+}
+
+model IdeaCategory {
+  idea       Idea     @relation(fields: [ideaId], references: [id])
+  ideaId     String
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+  createdAt  DateTime @default(now())
+
+  @@id([ideaId, categoryId]) // Composite primary key
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  idea      Idea     @relation(fields: [ideaId], references: [id])
+  ideaId    String
+  type      VoteType
+  createdAt DateTime @default(now())
+
+  @@unique([userId, ideaId]) 
+}
+
+model Comment {
+  id            String   @id @default(uuid())
+  content       String
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String
+  idea          Idea     @relation(fields: [ideaId], references: [id])
+  ideaId        String
+  parentComment Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id])
+  parentCommentId String?
+  replies       Comment[] @relation("CommentReplies")
+  isDeleted     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Payment {
+  id             String        @id @default(uuid())
+  user           User          @relation(fields: [userId], references: [id])
+  userId         String
+  idea           Idea          @relation(fields: [ideaId], references: [id])
+  ideaId         String
+  amount         Float
+  transactionId  String        @unique
+  paymentStatus  PaymentStatus @default(PENDING)
+  createdAt      DateTime      @default(now())
+}
+
+enum PaymentStatus {
+  PENDING
+  FAILED
+  PAID
+  REFUNDED
+  CANCELLED
+}
