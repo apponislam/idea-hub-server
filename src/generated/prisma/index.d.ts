@@ -2901,6 +2901,7 @@ export namespace Prisma {
     price: number | null
     creatorId: string | null
     rejectionFeedback: string | null
+    isDeleted: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2916,6 +2917,7 @@ export namespace Prisma {
     price: number | null
     creatorId: string | null
     rejectionFeedback: string | null
+    isDeleted: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2932,6 +2934,7 @@ export namespace Prisma {
     price: number
     creatorId: number
     rejectionFeedback: number
+    isDeleted: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2957,6 +2960,7 @@ export namespace Prisma {
     price?: true
     creatorId?: true
     rejectionFeedback?: true
+    isDeleted?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2972,6 +2976,7 @@ export namespace Prisma {
     price?: true
     creatorId?: true
     rejectionFeedback?: true
+    isDeleted?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2988,6 +2993,7 @@ export namespace Prisma {
     price?: true
     creatorId?: true
     rejectionFeedback?: true
+    isDeleted?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3091,6 +3097,7 @@ export namespace Prisma {
     price: number | null
     creatorId: string
     rejectionFeedback: string | null
+    isDeleted: boolean
     createdAt: Date
     updatedAt: Date
     _count: IdeaCountAggregateOutputType | null
@@ -3126,6 +3133,7 @@ export namespace Prisma {
     price?: boolean
     creatorId?: boolean
     rejectionFeedback?: boolean
+    isDeleted?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     creator?: boolean | UserDefaultArgs<ExtArgs>
@@ -3148,6 +3156,7 @@ export namespace Prisma {
     price?: boolean
     creatorId?: boolean
     rejectionFeedback?: boolean
+    isDeleted?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     creator?: boolean | UserDefaultArgs<ExtArgs>
@@ -3165,6 +3174,7 @@ export namespace Prisma {
     price?: boolean
     creatorId?: boolean
     rejectionFeedback?: boolean
+    isDeleted?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     creator?: boolean | UserDefaultArgs<ExtArgs>
@@ -3182,11 +3192,12 @@ export namespace Prisma {
     price?: boolean
     creatorId?: boolean
     rejectionFeedback?: boolean
+    isDeleted?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type IdeaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "problemStatement" | "proposedSolution" | "description" | "images" | "status" | "isPaid" | "price" | "creatorId" | "rejectionFeedback" | "createdAt" | "updatedAt", ExtArgs["result"]["idea"]>
+  export type IdeaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "problemStatement" | "proposedSolution" | "description" | "images" | "status" | "isPaid" | "price" | "creatorId" | "rejectionFeedback" | "isDeleted" | "createdAt" | "updatedAt", ExtArgs["result"]["idea"]>
   export type IdeaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     creator?: boolean | UserDefaultArgs<ExtArgs>
     categories?: boolean | Idea$categoriesArgs<ExtArgs>
@@ -3223,6 +3234,7 @@ export namespace Prisma {
       price: number | null
       creatorId: string
       rejectionFeedback: string | null
+      isDeleted: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["idea"]>
@@ -3664,6 +3676,7 @@ export namespace Prisma {
     readonly price: FieldRef<"Idea", 'Float'>
     readonly creatorId: FieldRef<"Idea", 'String'>
     readonly rejectionFeedback: FieldRef<"Idea", 'String'>
+    readonly isDeleted: FieldRef<"Idea", 'Boolean'>
     readonly createdAt: FieldRef<"Idea", 'DateTime'>
     readonly updatedAt: FieldRef<"Idea", 'DateTime'>
   }
@@ -9655,6 +9668,7 @@ export namespace Prisma {
     price: 'price',
     creatorId: 'creatorId',
     rejectionFeedback: 'rejectionFeedback',
+    isDeleted: 'isDeleted',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -9982,6 +9996,7 @@ export namespace Prisma {
     price?: FloatNullableFilter<"Idea"> | number | null
     creatorId?: StringFilter<"Idea"> | string
     rejectionFeedback?: StringNullableFilter<"Idea"> | string | null
+    isDeleted?: BoolFilter<"Idea"> | boolean
     createdAt?: DateTimeFilter<"Idea"> | Date | string
     updatedAt?: DateTimeFilter<"Idea"> | Date | string
     creator?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -10003,6 +10018,7 @@ export namespace Prisma {
     price?: SortOrderInput | SortOrder
     creatorId?: SortOrder
     rejectionFeedback?: SortOrderInput | SortOrder
+    isDeleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creator?: UserOrderByWithRelationInput
@@ -10027,6 +10043,7 @@ export namespace Prisma {
     price?: FloatNullableFilter<"Idea"> | number | null
     creatorId?: StringFilter<"Idea"> | string
     rejectionFeedback?: StringNullableFilter<"Idea"> | string | null
+    isDeleted?: BoolFilter<"Idea"> | boolean
     createdAt?: DateTimeFilter<"Idea"> | Date | string
     updatedAt?: DateTimeFilter<"Idea"> | Date | string
     creator?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -10048,6 +10065,7 @@ export namespace Prisma {
     price?: SortOrderInput | SortOrder
     creatorId?: SortOrder
     rejectionFeedback?: SortOrderInput | SortOrder
+    isDeleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: IdeaCountOrderByAggregateInput
@@ -10072,6 +10090,7 @@ export namespace Prisma {
     price?: FloatNullableWithAggregatesFilter<"Idea"> | number | null
     creatorId?: StringWithAggregatesFilter<"Idea"> | string
     rejectionFeedback?: StringNullableWithAggregatesFilter<"Idea"> | string | null
+    isDeleted?: BoolWithAggregatesFilter<"Idea"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Idea"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Idea"> | Date | string
   }
@@ -10489,6 +10508,7 @@ export namespace Prisma {
     isPaid?: boolean
     price?: number | null
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutIdeasInput
@@ -10510,6 +10530,7 @@ export namespace Prisma {
     price?: number | null
     creatorId: string
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     categories?: IdeaCategoryUncheckedCreateNestedManyWithoutIdeaInput
@@ -10529,6 +10550,7 @@ export namespace Prisma {
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutIdeasNestedInput
@@ -10550,6 +10572,7 @@ export namespace Prisma {
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     creatorId?: StringFieldUpdateOperationsInput | string
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categories?: IdeaCategoryUncheckedUpdateManyWithoutIdeaNestedInput
@@ -10570,6 +10593,7 @@ export namespace Prisma {
     price?: number | null
     creatorId: string
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -10585,6 +10609,7 @@ export namespace Prisma {
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -10601,6 +10626,7 @@ export namespace Prisma {
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     creatorId?: StringFieldUpdateOperationsInput | string
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11155,6 +11181,7 @@ export namespace Prisma {
     price?: SortOrder
     creatorId?: SortOrder
     rejectionFeedback?: SortOrder
+    isDeleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11174,6 +11201,7 @@ export namespace Prisma {
     price?: SortOrder
     creatorId?: SortOrder
     rejectionFeedback?: SortOrder
+    isDeleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11189,6 +11217,7 @@ export namespace Prisma {
     price?: SortOrder
     creatorId?: SortOrder
     rejectionFeedback?: SortOrder
+    isDeleted?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -12343,6 +12372,7 @@ export namespace Prisma {
     isPaid?: boolean
     price?: number | null
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     categories?: IdeaCategoryCreateNestedManyWithoutIdeaInput
@@ -12362,6 +12392,7 @@ export namespace Prisma {
     isPaid?: boolean
     price?: number | null
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     categories?: IdeaCategoryUncheckedCreateNestedManyWithoutIdeaInput
@@ -12495,6 +12526,7 @@ export namespace Prisma {
     price?: FloatNullableFilter<"Idea"> | number | null
     creatorId?: StringFilter<"Idea"> | string
     rejectionFeedback?: StringNullableFilter<"Idea"> | string | null
+    isDeleted?: BoolFilter<"Idea"> | boolean
     createdAt?: DateTimeFilter<"Idea"> | Date | string
     updatedAt?: DateTimeFilter<"Idea"> | Date | string
   }
@@ -12885,6 +12917,7 @@ export namespace Prisma {
     isPaid?: boolean
     price?: number | null
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutIdeasInput
@@ -12905,6 +12938,7 @@ export namespace Prisma {
     price?: number | null
     creatorId: string
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     votes?: VoteUncheckedCreateNestedManyWithoutIdeaInput
@@ -12956,6 +12990,7 @@ export namespace Prisma {
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutIdeasNestedInput
@@ -12976,6 +13011,7 @@ export namespace Prisma {
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     creatorId?: StringFieldUpdateOperationsInput | string
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     votes?: VoteUncheckedUpdateManyWithoutIdeaNestedInput
@@ -13052,6 +13088,7 @@ export namespace Prisma {
     isPaid?: boolean
     price?: number | null
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutIdeasInput
@@ -13072,6 +13109,7 @@ export namespace Prisma {
     price?: number | null
     creatorId: string
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     categories?: IdeaCategoryUncheckedCreateNestedManyWithoutIdeaInput
@@ -13147,6 +13185,7 @@ export namespace Prisma {
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutIdeasNestedInput
@@ -13167,6 +13206,7 @@ export namespace Prisma {
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     creatorId?: StringFieldUpdateOperationsInput | string
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categories?: IdeaCategoryUncheckedUpdateManyWithoutIdeaNestedInput
@@ -13220,6 +13260,7 @@ export namespace Prisma {
     isPaid?: boolean
     price?: number | null
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutIdeasInput
@@ -13240,6 +13281,7 @@ export namespace Prisma {
     price?: number | null
     creatorId: string
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     categories?: IdeaCategoryUncheckedCreateNestedManyWithoutIdeaInput
@@ -13374,6 +13416,7 @@ export namespace Prisma {
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutIdeasNestedInput
@@ -13394,6 +13437,7 @@ export namespace Prisma {
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     creatorId?: StringFieldUpdateOperationsInput | string
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categories?: IdeaCategoryUncheckedUpdateManyWithoutIdeaNestedInput
@@ -13496,6 +13540,7 @@ export namespace Prisma {
     isPaid?: boolean
     price?: number | null
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutIdeasInput
@@ -13516,6 +13561,7 @@ export namespace Prisma {
     price?: number | null
     creatorId: string
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     categories?: IdeaCategoryUncheckedCreateNestedManyWithoutIdeaInput
@@ -13591,6 +13637,7 @@ export namespace Prisma {
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutIdeasNestedInput
@@ -13611,6 +13658,7 @@ export namespace Prisma {
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     creatorId?: StringFieldUpdateOperationsInput | string
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categories?: IdeaCategoryUncheckedUpdateManyWithoutIdeaNestedInput
@@ -13629,6 +13677,7 @@ export namespace Prisma {
     isPaid?: boolean
     price?: number | null
     rejectionFeedback?: string | null
+    isDeleted?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13670,6 +13719,7 @@ export namespace Prisma {
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categories?: IdeaCategoryUpdateManyWithoutIdeaNestedInput
@@ -13689,6 +13739,7 @@ export namespace Prisma {
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     categories?: IdeaCategoryUncheckedUpdateManyWithoutIdeaNestedInput
@@ -13708,6 +13759,7 @@ export namespace Prisma {
     isPaid?: BoolFieldUpdateOperationsInput | boolean
     price?: NullableFloatFieldUpdateOperationsInput | number | null
     rejectionFeedback?: NullableStringFieldUpdateOperationsInput | string | null
+    isDeleted?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

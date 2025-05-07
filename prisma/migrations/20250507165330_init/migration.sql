@@ -41,6 +41,7 @@ CREATE TABLE "Idea" (
     "price" DOUBLE PRECISION,
     "creatorId" TEXT NOT NULL,
     "rejectionFeedback" TEXT,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
