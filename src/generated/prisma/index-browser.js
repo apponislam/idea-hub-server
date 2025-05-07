@@ -144,6 +144,7 @@ exports.Prisma.IdeaScalarFieldEnum = {
   price: 'price',
   creatorId: 'creatorId',
   rejectionFeedback: 'rejectionFeedback',
+  isDeleted: 'isDeleted',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

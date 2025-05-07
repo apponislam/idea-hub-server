@@ -6,8 +6,8 @@ import config from "../config";
 import catchAsync from "../utils/catchAsync";
 import prisma from "../../prisma/client";
 
-const auth = catchAsync(async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
-    try {
+const auth = () => {
+    return catchAsync(async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
         const token = req.headers.authorization;
 
         if (!token) {
@@ -24,12 +24,10 @@ const auth = catchAsync(async (req: Request & { user?: any }, res: Response, nex
             throw new AppError(404, "User not found");
         }
 
-        req.user = decoded;
+        req.user = user; // Attach full user object instead of just decoded
 
         next();
-    } catch (err) {
-        next(err);
-    }
-});
+    });
+};
 
 export default auth;
