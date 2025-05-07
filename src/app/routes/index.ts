@@ -3,6 +3,9 @@ import { userRoute } from "../modules/user/user.route";
 import { ideaRoutes } from "../modules/idea/idea.route";
 import { authRoute } from "../modules/auth/auth.route";
 import { voteRoutes } from "../modules/vote/vote.route";
+import { commentRoutes } from "../modules/comment/commnet.route";
+import { paymentRoutes } from "../modules/payment/payment.route";
+import { categoryRoutes } from "../modules/category/category.route";
 
 const router = express.Router();
 
@@ -20,8 +23,20 @@ const moduleRoutes = [
         route: ideaRoutes,
     },
     {
+        path: "/category",
+        route: categoryRoutes,
+    },
+    {
         path: "/vote",
         route: voteRoutes,
+    },
+    {
+        path: "/comment",
+        route: commentRoutes,
+    },
+    {
+        path: "/payment",
+        route: paymentRoutes,
     },
 ];
 
