@@ -6,6 +6,17 @@ const createIdea = async (data: { title: string; problemStatement: string; propo
     const isActuallyPaid = data.isPaid && data.price !== null && data.price !== 0;
     const actualPrice = isActuallyPaid ? data.price : null;
 
+    const categories = await prisma.category.findMany({
+        where: {
+            id: { in: data.categoryIds },
+        },
+    });
+
+    if (categories.length !== data.categoryIds.length) {
+        const missingIds = data.categoryIds.filter((id) => !categories.some((c) => c.id === id));
+        throw new AppError(400, `Categories not found: ${missingIds.join(", ")}`);
+    }
+
     const idea = await prisma.idea.create({
         data: {
             title: data.title,
