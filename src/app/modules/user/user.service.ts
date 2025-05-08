@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import prisma from "../../../prisma/client";
 import config from "../../config";
+import { Role } from "../../../generated/prisma";
 
 const createUser = async (data: { name: string; email: string; password: string; image?: string }) => {
     const hashedPassword = await bcrypt.hash(data.password, Number(config.bcrypt_salt_rounds));
@@ -11,7 +12,7 @@ const createUser = async (data: { name: string; email: string; password: string;
             email: data.email,
             image: data.image || null,
             password: hashedPassword,
-            role: "MEMBER",
+            role: Role.MEMBER,
         },
         select: {
             id: true,
