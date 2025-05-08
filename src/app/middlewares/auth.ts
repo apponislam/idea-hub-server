@@ -10,6 +10,8 @@ const auth = () => {
     return catchAsync(async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
         const token = req.headers.authorization;
 
+        console.log(req.headers);
+
         if (!token) {
             throw new AppError(401, "You are not authorized!");
         }
@@ -24,7 +26,9 @@ const auth = () => {
             throw new AppError(404, "User not found");
         }
 
-        req.user = user; // Attach full user object instead of just decoded
+        const { password, ...safeUser } = user;
+
+        req.user = safeUser;
 
         next();
     });

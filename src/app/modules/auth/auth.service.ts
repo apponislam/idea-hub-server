@@ -25,6 +25,7 @@ const loginUser = async (payload: { email: string; password: string }) => {
             email: userData.email,
             image: userData.image,
             role: userData.role,
+            status: userData.status,
         },
         config.jwt_secret as Secret,
         config.jwt_secret_expire as string
@@ -37,12 +38,23 @@ const loginUser = async (payload: { email: string; password: string }) => {
             email: userData.email,
             image: userData.image,
             role: userData.role,
+            status: userData.status,
         },
         config.jwt_refresh_secret as Secret,
         config.jwt_refresh_secret_expire as string
     );
 
+    const user = {
+        id: userData.id,
+        name: userData.name,
+        email: userData.email,
+        image: userData.image,
+        role: userData.role,
+        status: userData.status,
+    };
+
     return {
+        user,
         accessToken,
         refreshToken,
     };
