@@ -26,6 +26,81 @@ const createUser = async (data: { name: string; email: string; password: string;
     return user;
 };
 
+const getAllUsers = async () => {
+    return await prisma.user.findMany({
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            status: true,
+            createdAt: true,
+            image: true,
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+};
+
+const updateUserRole = async (userId: string, role: Role) => {
+    return await prisma.user.update({
+        where: { id: userId },
+        data: { role },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            status: true,
+        },
+    });
+};
+
+const activateUser = async (userId: string) => {
+    return await prisma.user.update({
+        where: { id: userId },
+        data: { status: "ACTIVE" },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            status: true,
+        },
+    });
+};
+
+const deactivateUser = async (userId: string) => {
+    return await prisma.user.update({
+        where: { id: userId },
+        data: { status: "BLOCKED" },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            status: true,
+        },
+    });
+};
+
+const deleteUser = async (userId: string) => {
+    return await prisma.user.update({
+        where: { id: userId },
+        data: { status: "DELECTED" },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            status: true,
+        },
+    });
+};
+
 export const userService = {
     createUser,
+    getAllUsers,
+    updateUserRole,
+    activateUser,
+    deactivateUser,
+    deleteUser,
 };

@@ -23,6 +23,45 @@ const createIdea = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getMyIdeas = catchAsync(async (req: Request, res: Response) => {
+    if (!req.user) {
+        throw new AppError(401, "Unauthorized");
+    }
+
+    const filters = {
+        searchTerm: req.query.search as string,
+        status: req.query.status as string,
+        isPaid: req.query.isPaid ? req.query.isPaid === "true" : undefined,
+        page: Number(req.query.page) || 1,
+        limit: Number(req.query.limit) || 10,
+    };
+
+    const result = await ideaService.getMyIdeas(req.user.id, filters);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Your ideas retrieved successfully",
+        data: result.data,
+        meta: result.meta,
+    });
+});
+
+const getSingleIdea = catchAsync(async (req: Request, res: Response) => {
+    if (!req.user) {
+        throw new AppError(401, "Unauthorized");
+    }
+
+    const idea = await ideaService.getSingleIdea(req.params.id, req.user.id);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Idea retrieved successfully",
+        data: idea,
+    });
+});
+
 const getAllIdeas = catchAsync(async (req: Request, res: Response) => {
     const filters = {
         searchTerm: req.query.search as string,
@@ -46,12 +85,11 @@ const updateIdea = catchAsync(async (req: Request, res: Response) => {
         throw new AppError(401, "Unauthorized");
     }
 
-    const idea = await ideaService.updateIdea(
-        req.params.id, // ideaId from route
-        req.body, // update data
-        req.user.id, // current user ID
-        req.user.role // current user role
-    );
+    // console.log(req.body);
+
+    const idea = await ideaService.updateIdea(req.params.id, req.body, req.user.id, req.user.role);
+
+    console.log(idea);
 
     sendResponse(res, {
         statusCode: 200,
@@ -66,11 +104,7 @@ const deleteIdea = catchAsync(async (req: Request, res: Response) => {
         throw new AppError(401, "Unauthorized");
     }
 
-    const result = await ideaService.deleteIdea(
-        req.params.id, // ideaId from route
-        req.user.id, // current user ID
-        req.user.role // current user role
-    );
+    const result = await ideaService.deleteIdea(req.params.id, req.user.id, req.user.role);
 
     sendResponse(res, {
         statusCode: 200,
@@ -82,6 +116,8 @@ const deleteIdea = catchAsync(async (req: Request, res: Response) => {
 
 export const ideaController = {
     createIdea,
+    getMyIdeas,
+    getSingleIdea,
     getAllIdeas,
     updateIdea,
     deleteIdea,
