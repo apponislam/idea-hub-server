@@ -6,6 +6,10 @@ const router = express.Router();
 
 router.post("/", auth(), ideaController.createIdea);
 
+router.get("/my-ideas", auth(), ideaController.getMyIdeas);
+
+router.get("/my-ideas/:id", auth(), ideaController.getSingleIdea);
+
 router.get("/", ideaController.getAllIdeas);
 
 router.patch("/:id", auth(), ideaController.updateIdea);

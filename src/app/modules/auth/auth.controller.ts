@@ -7,11 +7,18 @@ import AppError from "../../error/AppError";
 const loginUser = catchAsync(async (req: Request, res: Response) => {
     const result = await authServices.loginUser(req.body);
 
-    const { refreshToken } = result;
+    const { refreshToken, accessToken } = result;
 
     res.cookie("refreshToken", refreshToken, {
         secure: false,
+        sameSite: "lax",
         httpOnly: true,
+    });
+
+    res.cookie("next-auth.session-token", accessToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
     });
 
     sendResponse(res, {
@@ -21,7 +28,21 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
         data: {
             user: result.user,
             accessToken: result.accessToken,
+            refreshToken,
         },
+    });
+});
+
+const refreshToken = catchAsync(async (req: Request, res: Response) => {
+    const { refreshToken } = req.cookies;
+
+    const result = await authServices.refreshToken(refreshToken);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Access token genereated successfully!",
+        data: result,
     });
 });
 
@@ -40,4 +61,5 @@ const getMe = catchAsync(async (req: Request & { user?: any }, res: Response) =>
 export const authController = {
     loginUser,
     getMe,
+    refreshToken,
 };

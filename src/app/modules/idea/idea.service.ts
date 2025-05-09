@@ -1,8 +1,8 @@
 import prisma from "../../../prisma/client";
-import { Prisma } from "../../../generated/prisma";
+import { IdeaStatus, Prisma } from "../../../generated/prisma";
 import AppError from "../../error/AppError";
 
-const createIdea = async (data: { title: string; problemStatement: string; proposedSolution: string; description: string; images?: string[]; isPaid?: boolean; price?: number | null; creatorId: string; categoryIds: string[] }) => {
+const createIdea = async (data: { title: string; problemStatement: string; proposedSolution: string; description: string; images?: string[]; isPaid?: boolean; price?: number | null; creatorId: string; categoryIds: string[]; status: IdeaStatus }) => {
     const isActuallyPaid = data.isPaid && data.price !== null && data.price !== 0;
     const actualPrice = isActuallyPaid ? data.price : null;
 
@@ -26,7 +26,7 @@ const createIdea = async (data: { title: string; problemStatement: string; propo
             images: data.images || [],
             isPaid: isActuallyPaid,
             price: actualPrice,
-            status: "DRAFT",
+            status: data.status,
             creatorId: data.creatorId,
             categories: {
                 createMany: {
@@ -49,6 +49,107 @@ const createIdea = async (data: { title: string; problemStatement: string; propo
             },
         },
     });
+
+    return idea;
+};
+
+const getMyIdeas = async (
+    creatorId: string,
+    filters: {
+        searchTerm?: string;
+        status?: string;
+        isPaid?: boolean;
+        page?: number;
+        limit?: number;
+    }
+) => {
+    const { searchTerm, status, isPaid, page = 1, limit = 10 } = filters;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.IdeaWhereInput = {
+        creatorId,
+        isDeleted: false,
+        ...(searchTerm && {
+            OR: [{ title: { contains: searchTerm, mode: "insensitive" } }, { description: { contains: searchTerm, mode: "insensitive" } }, { problemStatement: { contains: searchTerm, mode: "insensitive" } }, { proposedSolution: { contains: searchTerm, mode: "insensitive" } }],
+        }),
+        ...(status && { status: status as IdeaStatus }), // cast status to IdeaStatus enum
+        ...(typeof isPaid === "boolean" && { isPaid }),
+    };
+
+    const [ideas, total] = await Promise.all([
+        prisma.idea.findMany({
+            where,
+            include: {
+                categories: {
+                    include: {
+                        category: true,
+                    },
+                },
+                creator: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                    },
+                },
+                _count: {
+                    select: {
+                        votes: true,
+                        comments: true,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: "desc",
+            },
+            skip,
+            take: limit,
+        }),
+        prisma.idea.count({ where }),
+    ]);
+
+    return {
+        data: ideas,
+        meta: {
+            page,
+            limit,
+            total,
+        },
+    };
+};
+
+const getSingleIdea = async (ideaId: string, userId: string) => {
+    const idea = await prisma.idea.findFirst({
+        where: {
+            id: ideaId,
+            creatorId: userId, // Ensure user owns the idea
+            isDeleted: false,
+        },
+        include: {
+            categories: {
+                include: {
+                    category: true,
+                },
+            },
+            creator: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                },
+            },
+            _count: {
+                select: {
+                    votes: true,
+                    comments: true,
+                },
+            },
+        },
+    });
+
+    if (!idea) {
+        throw new AppError(404, "Idea not found");
+    }
 
     return idea;
 };
@@ -127,6 +228,7 @@ const updateIdea = async (
         isPaid?: boolean;
         price?: number | null;
         categoryIds?: string[];
+        status?: IdeaStatus;
     },
     userId: string,
     userRole: string
@@ -139,11 +241,16 @@ const updateIdea = async (
         include: { creator: true },
     });
 
+    console.log(existingIdea);
+
     if (!existingIdea) {
         throw new AppError(404, "Idea not found");
     }
 
-    if (existingIdea.creatorId !== userId && userRole !== "ADMIN") {
+    const isOwner = existingIdea.creatorId === userId;
+    const isAdmin = userRole === "ADMIN";
+
+    if (!isOwner && !isAdmin) {
         throw new AppError(403, "You can only edit your own ideas");
     }
 
@@ -159,17 +266,23 @@ const updateIdea = async (
         };
     }
 
+    const { title, description, problemStatement, proposedSolution, status, images } = data;
+
     const isActuallyPaid = data.isPaid && data.price !== null && data.price !== 0;
     const actualPrice = isActuallyPaid ? data.price : null;
 
     return await prisma.idea.update({
         where: { id: ideaId },
         data: {
-            ...data,
+            title,
+            description: description?.trim(),
+            problemStatement,
+            proposedSolution,
+            status,
+            images,
             isPaid: isActuallyPaid,
             price: actualPrice,
             ...categoryUpdates,
-            status: "DRAFT",
         },
         include: {
             categories: {
@@ -214,6 +327,8 @@ const deleteIdea = async (ideaId: string, userId: string, userRole: string) => {
 
 export const ideaService = {
     createIdea,
+    getMyIdeas,
+    getSingleIdea,
     getAllIdeas,
     updateIdea,
     deleteIdea,
