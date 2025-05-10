@@ -16,4 +16,9 @@ router.patch("/:id", auth(), ideaController.updateIdea);
 
 router.delete("/:id", auth(), ideaController.deleteIdea);
 
+// get admin
+
+router.get("/adminideas", ideaController.getIdeasForAdmin);
+router.patch("/:id/status", auth(), ideaController.updateIdeaStatus);
+
 export const ideaRoutes = router;
