@@ -325,6 +325,104 @@ const deleteIdea = async (ideaId: string, userId: string, userRole: string) => {
     });
 };
 
+// admin get
+
+const getIdeasForAdmin = async (filters: any, pagination: any) => {
+    const { page, limit } = pagination;
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.IdeaWhereInput = {
+        isDeleted: false,
+    };
+
+    if (filters.searchTerm) {
+        where.OR = [{ title: { contains: filters.searchTerm, mode: "insensitive" } }, { description: { contains: filters.searchTerm, mode: "insensitive" } }];
+    }
+
+    if (filters.category && filters.category !== "ALL") {
+        where.categories = {
+            some: {
+                category: {
+                    name: filters.category,
+                },
+            },
+        };
+    }
+
+    if (filters.status && filters.status !== "ALL") {
+        where.status = filters.status;
+    }
+
+    if (filters.isPaid !== undefined) {
+        where.isPaid = filters.isPaid;
+    }
+
+    const ideas = await prisma.idea.findMany({
+        where,
+        include: {
+            categories: {
+                include: {
+                    category: true,
+                },
+            },
+            creator: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                },
+            },
+        },
+        skip,
+        take: limit,
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+
+    const total = await prisma.idea.count({ where });
+
+    return {
+        data: ideas,
+        meta: {
+            page,
+            limit,
+            total,
+        },
+    };
+};
+
+const updateIdeaStatus = async (
+    id: string,
+    status: IdeaStatus,
+    rejectionFeedback?: string // Add optional parameter
+) => {
+    if (!Object.values(IdeaStatus).includes(status)) {
+        throw new AppError(404, "Invalid status value");
+    }
+
+    const updateData: any = { status };
+    if (status === "REJECTED" && rejectionFeedback) {
+        updateData.rejectionFeedback = rejectionFeedback;
+    }
+
+    const idea = await prisma.idea.update({
+        where: { id },
+        data: updateData,
+        include: {
+            creator: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                },
+            },
+        },
+    });
+
+    return idea;
+};
+
 export const ideaService = {
     createIdea,
     getMyIdeas,
@@ -332,4 +430,6 @@ export const ideaService = {
     getAllIdeas,
     updateIdea,
     deleteIdea,
+    getIdeasForAdmin,
+    updateIdeaStatus,
 };

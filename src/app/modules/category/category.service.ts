@@ -23,6 +23,33 @@ const getAllCategories = async () => {
     });
 };
 
+const getCategoryById = async (id: string) => {
+    const category = await prisma.category.findUnique({
+        where: { id },
+    });
+
+    if (!category) {
+        throw new AppError(404, "Category not found");
+    }
+
+    return category;
+};
+
+const updateCategory = async (id: string, name: string) => {
+    const existingCategory = await prisma.category.findUnique({
+        where: { name },
+    });
+
+    if (existingCategory && existingCategory.id !== id) {
+        throw new AppError(400, "Category name already exists");
+    }
+
+    return await prisma.category.update({
+        where: { id },
+        data: { name },
+    });
+};
+
 const deleteCategory = async (categoryId: string) => {
     const ideasWithCategory = await prisma.ideaCategory.findFirst({
         where: { categoryId },
@@ -41,4 +68,6 @@ export const categoryService = {
     createCategory,
     getAllCategories,
     deleteCategory,
+    getCategoryById,
+    updateCategory,
 };

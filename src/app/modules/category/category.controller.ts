@@ -36,6 +36,40 @@ const getCategories = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getSingleCategory = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const category = await categoryService.getCategoryById(id);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Category retrieved successfully",
+        data: category,
+    });
+});
+
+const updateCategory = catchAsync(async (req: Request, res: Response) => {
+    if (!req.user) {
+        throw new AppError(401, "Unauthorized");
+    }
+    const userRole = req.user.role;
+
+    if (userRole !== "ADMIN") {
+        throw new AppError(403, "You don't have admin privileges");
+    }
+
+    const { id } = req.params;
+    const { name } = req.body;
+    const category = await categoryService.updateCategory(id, name);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Category updated successfully",
+        data: category,
+    });
+});
+
 const deleteCategory = catchAsync(async (req: Request, res: Response) => {
     if (!req.user) {
         throw new AppError(401, "Unauthorized");
@@ -61,4 +95,6 @@ export const categoryController = {
     createCategory,
     getCategories,
     deleteCategory,
+    getSingleCategory,
+    updateCategory,
 };
