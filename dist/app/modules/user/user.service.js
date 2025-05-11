@@ -16,7 +16,7 @@ exports.userService = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const client_1 = __importDefault(require("../../../prisma/client"));
 const config_1 = __importDefault(require("../../config"));
-const prisma_1 = require("../../../generated/prisma");
+const prisma_1 = require("../../../../generated/prisma");
 const createUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const hashedPassword = yield bcrypt_1.default.hash(data.password, Number(config_1.default.bcrypt_salt_rounds));
     const user = yield client_1.default.user.create({

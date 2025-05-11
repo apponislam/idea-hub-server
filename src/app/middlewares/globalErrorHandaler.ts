@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { Prisma } from "../../generated/prisma";
+import { Prisma } from "../../../generated/prisma";
 
 const globalErrorHandler = (err: unknown, req: Request, res: Response, next: NextFunction) => {
     let status = 500;

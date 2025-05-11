@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.paymentService = void 0;
-const prisma_1 = require("../../../generated/prisma");
+const prisma_1 = require("../../../../generated/prisma");
 const client_1 = __importDefault(require("../../../prisma/client"));
 const AppError_1 = __importDefault(require("../../error/AppError"));
 const payment_utils_1 = require("./payment.utils");

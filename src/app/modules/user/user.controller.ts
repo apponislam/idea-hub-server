@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { userService } from "./user.service";
 import sendResponse from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
-import { Role } from "../../../generated/prisma";
+import { Role } from "../../../../generated/prisma";
 import AppError from "../../error/AppError";
 
 const createUser = catchAsync(async (req: Request, res: Response) => {

@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authServices = void 0;
-const prisma_1 = require("../../../generated/prisma");
+const prisma_1 = require("../../../../generated/prisma");
 const client_1 = __importDefault(require("../../../prisma/client"));
 const jwtHelper_1 = require("../../helpers/jwtHelper");
 const bcrypt_1 = __importDefault(require("bcrypt"));
