@@ -256,11 +256,12 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://postgres:apponsql@localhost:5432/idea-hub?schema=public"
+        "value": null
       }
     }
   },
