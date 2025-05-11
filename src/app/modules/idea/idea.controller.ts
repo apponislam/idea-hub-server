@@ -70,13 +70,19 @@ const getAllIdeas = catchAsync(async (req: Request, res: Response) => {
         isPaid: req.query.isPaid ? req.query.isPaid === "true" : undefined,
     };
 
-    const ideas = await ideaService.getAllIdeas(filters);
+    const paginationOptions = {
+        page: Number(req.query.page) || 1,
+        limit: Number(req.query.limit) || 10,
+    };
+
+    const result = await ideaService.getAllIdeas(filters, paginationOptions);
 
     sendResponse(res, {
         statusCode: 200,
         success: true,
         message: "Ideas retrieved successfully",
-        data: ideas,
+        data: result.data,
+        meta: result.meta,
     });
 });
 

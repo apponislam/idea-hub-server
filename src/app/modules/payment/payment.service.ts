@@ -148,9 +148,49 @@ const getRealPurchases = async (userId: string, ideaId: string) => {
     return purchases;
 };
 
+const getMyPurchasedIdeas = async (userId: string) => {
+    const payments = await prisma.payment.findMany({
+        where: {
+            userId: userId,
+            paymentStatus: "PAID",
+        },
+        include: {
+            idea: {
+                select: {
+                    id: true,
+                    title: true,
+                    description: true,
+                    price: true,
+                    images: true,
+                    creator: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            image: true,
+                        },
+                    },
+                },
+            },
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+
+    // Transform the data to focus on ideas
+    return payments.map((payment) => ({
+        ...payment.idea,
+        purchasedAt: payment.createdAt,
+        transactionId: payment.transactionId,
+        paymentAmount: payment.amount,
+    }));
+};
+
 export const paymentService = {
     createPayment,
     verifyPayment,
     getAllPaymentsForAdmin,
     getRealPurchases,
+    getMyPurchasedIdeas,
 };
