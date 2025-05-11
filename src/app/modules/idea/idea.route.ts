@@ -6,6 +6,8 @@ const router = express.Router();
 
 router.post("/", auth(), ideaController.createIdea);
 
+router.get("/public/:ideaid", ideaController.getSingleIdeaPublic);
+
 router.get("/my-ideas", auth(), ideaController.getMyIdeas);
 
 router.get("/my-ideas/:id", auth(), ideaController.getSingleIdea);
@@ -19,6 +21,7 @@ router.delete("/:id", auth(), ideaController.deleteIdea);
 // get admin
 
 router.get("/adminideas", ideaController.getIdeasForAdmin);
+router.get("/adminideas/:id", auth(), ideaController.getSingleIdeaForAdmin);
 router.patch("/:id/status", auth(), ideaController.updateIdeaStatus);
 
 export const ideaRoutes = router;

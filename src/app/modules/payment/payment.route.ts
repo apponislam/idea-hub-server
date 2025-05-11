@@ -5,7 +5,10 @@ import auth from "../../middlewares/auth";
 const router = express.Router();
 
 router.post("/", auth(), paymentController.createOrder);
-router.patch("/verify", auth(), paymentController.verifyPayment);
-// router.get("/my-payments", auth(), paymentController.getUserPayments);
+router.get("/verify", paymentController.verifyPayment);
+
+router.get("/paymentsAdmin", auth(), paymentController.getAllPaymentsForAdmin);
+
+router.get("/my-purchases/:ideaId", auth(), paymentController.getRealPurchases);
 
 export const paymentRoutes = router;

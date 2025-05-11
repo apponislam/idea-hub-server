@@ -92,7 +92,65 @@ const verifyPayment = async (order_id: string) => {
     return null;
 };
 
+const getAllPaymentsForAdmin = async () => {
+    const payments = await prisma.payment.findMany({
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                },
+            },
+            idea: {
+                select: {
+                    id: true,
+                    title: true,
+                    price: true,
+                },
+            },
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+
+    return payments;
+};
+
+const getRealPurchases = async (userId: string, ideaId: string) => {
+    if (!ideaId) {
+        throw new AppError(400, "Idea ID is required");
+    }
+
+    const purchases = await prisma.payment.findMany({
+        where: {
+            userId,
+            ideaId,
+            paymentStatus: PaymentStatus.PAID,
+        },
+        include: {
+            idea: {
+                select: {
+                    id: true,
+                    title: true,
+                    description: true,
+                    price: true,
+                    createdAt: true,
+                },
+            },
+        },
+        orderBy: {
+            createdAt: "desc",
+        },
+    });
+
+    return purchases;
+};
+
 export const paymentService = {
     createPayment,
     verifyPayment,
+    getAllPaymentsForAdmin,
+    getRealPurchases,
 };

@@ -122,7 +122,7 @@ const getSingleIdea = async (ideaId: string, userId: string) => {
     const idea = await prisma.idea.findFirst({
         where: {
             id: ideaId,
-            creatorId: userId, // Ensure user owns the idea
+            creatorId: userId,
             isDeleted: false,
         },
         include: {
@@ -215,6 +215,221 @@ const getAllIdeas = async (filters: { searchTerm?: string; category?: string; st
     });
 
     return ideas;
+};
+
+// const getSingleIdeaPublic = async (id: string) => {
+//     console.log(id);
+
+//     const idea = await prisma.idea.findUnique({
+//         where: {
+//             id,
+//             isDeleted: false,
+//             status: "APPROVED",
+//         },
+//         include: {
+//             creator: {
+//                 select: {
+//                     id: true,
+//                     name: true,
+//                     email: true,
+//                     image: true,
+//                 },
+//             },
+//             categories: {
+//                 include: {
+//                     category: true,
+//                 },
+//             },
+//             votes: {
+//                 select: {
+//                     id: true,
+//                     type: true,
+//                     userId: true,
+//                 },
+//             },
+//             comments: {
+//                 where: {
+//                     isDeleted: false,
+//                 },
+//                 include: {
+//                     user: {
+//                         select: {
+//                             id: true,
+//                             name: true,
+//                             image: true,
+//                         },
+//                     },
+//                     replies: {
+//                         where: {
+//                             isDeleted: false,
+//                         },
+//                         include: {
+//                             user: {
+//                                 select: {
+//                                     id: true,
+//                                     name: true,
+//                                     image: true,
+//                                 },
+//                             },
+//                         },
+//                         orderBy: {
+//                             createdAt: "asc",
+//                         },
+//                     },
+//                 },
+//                 orderBy: {
+//                     createdAt: "desc",
+//                 },
+//             },
+//             _count: {
+//                 select: {
+//                     votes: true,
+//                     comments: true,
+//                 },
+//             },
+//         },
+//     });
+
+//     if (!idea) {
+//         throw new Error("Idea not found");
+//     }
+
+//     // Calculate vote counts
+//     const upvotes = idea.votes.filter((vote) => vote.type === "UPVOTE").length;
+//     const downvotes = idea.votes.filter((vote) => vote.type === "DOWNVOTE").length;
+
+//     return {
+//         ...idea,
+//         upvotes,
+//         downvotes,
+//     };
+// };
+
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    image: string | null;
+}
+
+interface Comment {
+    id: string;
+    content: string;
+    userId: string;
+    ideaId: string;
+    parentCommentId: string | null;
+    isDeleted: boolean;
+    createdAt: string;
+    updatedAt: string;
+    user: User;
+    replies: Comment[];
+}
+
+const getSingleIdeaPublic = async (id: string) => {
+    const idea = await prisma.idea.findUnique({
+        where: {
+            id,
+            isDeleted: false,
+            status: "APPROVED",
+        },
+        include: {
+            creator: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    image: true,
+                },
+            },
+            categories: {
+                include: {
+                    category: true,
+                },
+            },
+            votes: {
+                select: {
+                    id: true,
+                    type: true,
+                    userId: true,
+                },
+            },
+            comments: {
+                where: {
+                    isDeleted: false,
+                    parentCommentId: null, // Only get top-level comments initially
+                },
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            image: true,
+                        },
+                    },
+                    replies: {
+                        where: {
+                            isDeleted: false,
+                        },
+                        include: {
+                            user: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    image: true,
+                                },
+                            },
+                            replies: {
+                                // Include nested replies recursively
+                                where: {
+                                    isDeleted: false,
+                                },
+                                include: {
+                                    user: {
+                                        select: {
+                                            id: true,
+                                            name: true,
+                                            image: true,
+                                        },
+                                    },
+                                },
+                                orderBy: {
+                                    createdAt: "asc",
+                                },
+                            },
+                        },
+                        orderBy: {
+                            createdAt: "asc",
+                        },
+                    },
+                },
+                orderBy: {
+                    createdAt: "desc",
+                },
+            },
+            _count: {
+                select: {
+                    votes: true,
+                    comments: true,
+                },
+            },
+        },
+    });
+
+    if (!idea) {
+        throw new Error("Idea not found");
+    }
+
+    // Calculate vote counts
+    const upvotes = idea.votes.filter((vote) => vote.type === "UPVOTE").length;
+    const downvotes = idea.votes.filter((vote) => vote.type === "DOWNVOTE").length;
+
+    return {
+        ...idea,
+        upvotes,
+        downvotes,
+        // Return all comments with their nested replies
+        comments: idea.comments,
+    };
 };
 
 const updateIdea = async (
@@ -392,6 +607,41 @@ const getIdeasForAdmin = async (filters: any, pagination: any) => {
     };
 };
 
+const getSingleIdeaForAdmin = async (id: string) => {
+    const idea = await prisma.idea.findUnique({
+        where: {
+            id,
+            isDeleted: false,
+        },
+        include: {
+            categories: {
+                include: {
+                    category: true,
+                },
+            },
+            creator: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                },
+            },
+            _count: {
+                select: {
+                    votes: true,
+                    comments: true,
+                },
+            },
+        },
+    });
+
+    if (!idea) {
+        throw new AppError(404, "Idea not found");
+    }
+
+    return idea;
+};
+
 const updateIdeaStatus = async (
     id: string,
     status: IdeaStatus,
@@ -428,8 +678,10 @@ export const ideaService = {
     getMyIdeas,
     getSingleIdea,
     getAllIdeas,
+    getSingleIdeaPublic,
     updateIdea,
     deleteIdea,
     getIdeasForAdmin,
+    getSingleIdeaForAdmin,
     updateIdeaStatus,
 };
