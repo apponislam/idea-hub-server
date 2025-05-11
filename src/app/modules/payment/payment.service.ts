@@ -1,4 +1,4 @@
-import { IdeaStatus, PaymentStatus } from "../../../generated/prisma";
+import { IdeaStatus, PaymentStatus } from "../../../../generated/prisma";
 import prisma from "../../../prisma/client";
 import AppError from "../../error/AppError";
 import { paymentUtils } from "./payment.utils";

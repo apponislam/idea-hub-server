@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const prisma_1 = require("../../generated/prisma");
+const prisma_1 = require("../../../generated/prisma");
 const globalErrorHandler = (err, req, res, next) => {
     let status = 500;
     let message = "Something went wrong!";

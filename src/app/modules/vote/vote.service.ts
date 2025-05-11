@@ -1,4 +1,4 @@
-import { VoteType } from "../../../generated/prisma";
+import { VoteType } from "../../../../generated/prisma";
 import prisma from "../../../prisma/client";
 import AppError from "../../error/AppError";
 

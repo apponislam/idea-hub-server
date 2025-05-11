@@ -16,7 +16,7 @@ exports.userController = void 0;
 const user_service_1 = require("./user.service");
 const sendResponse_1 = __importDefault(require("../../utils/sendResponse"));
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
-const prisma_1 = require("../../../generated/prisma");
+const prisma_1 = require("../../../../generated/prisma");
 const AppError_1 = __importDefault(require("../../error/AppError"));
 const createUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield user_service_1.userService.createUser(req.body);

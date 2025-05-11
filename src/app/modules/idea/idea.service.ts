@@ -1,5 +1,5 @@
 import prisma from "../../../prisma/client";
-import { IdeaStatus, Prisma } from "../../../generated/prisma";
+import { IdeaStatus, Prisma } from "../../../../generated/prisma";
 import AppError from "../../error/AppError";
 
 const createIdea = async (data: { title: string; problemStatement: string; proposedSolution: string; description: string; images?: string[]; isPaid?: boolean; price?: number | null; creatorId: string; categoryIds: string[]; status: IdeaStatus }) => {

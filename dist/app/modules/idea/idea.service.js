@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ideaService = void 0;
 const client_1 = __importDefault(require("../../../prisma/client"));
-const prisma_1 = require("../../../generated/prisma");
+const prisma_1 = require("../../../../generated/prisma");
 const AppError_1 = __importDefault(require("../../error/AppError"));
 const createIdea = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const isActuallyPaid = data.isPaid && data.price !== null && data.price !== 0;
