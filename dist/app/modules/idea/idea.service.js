@@ -1,23 +1,34 @@
-import prisma from "../../../prisma/client";
-import { IdeaStatus, Prisma } from "../../../generated/prisma";
-import AppError from "../../error/AppError";
-
-const createIdea = async (data: { title: string; problemStatement: string; proposedSolution: string; description: string; images?: string[]; isPaid?: boolean; price?: number | null; creatorId: string; categoryIds: string[]; status: IdeaStatus }) => {
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ideaService = void 0;
+const client_1 = __importDefault(require("../../../prisma/client"));
+const prisma_1 = require("../../../generated/prisma");
+const AppError_1 = __importDefault(require("../../error/AppError"));
+const createIdea = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const isActuallyPaid = data.isPaid && data.price !== null && data.price !== 0;
     const actualPrice = isActuallyPaid ? data.price : null;
-
-    const categories = await prisma.category.findMany({
+    const categories = yield client_1.default.category.findMany({
         where: {
             id: { in: data.categoryIds },
         },
     });
-
     if (categories.length !== data.categoryIds.length) {
         const missingIds = data.categoryIds.filter((id) => !categories.some((c) => c.id === id));
-        throw new AppError(400, `Categories not found: ${missingIds.join(", ")}`);
+        throw new AppError_1.default(400, `Categories not found: ${missingIds.join(", ")}`);
     }
-
-    const idea = await prisma.idea.create({
+    const idea = yield client_1.default.idea.create({
         data: {
             title: data.title,
             problemStatement: data.problemStatement,
@@ -49,35 +60,16 @@ const createIdea = async (data: { title: string; problemStatement: string; propo
             },
         },
     });
-
     return idea;
-};
-
-const getMyIdeas = async (
-    creatorId: string,
-    filters: {
-        searchTerm?: string;
-        status?: string;
-        isPaid?: boolean;
-        page?: number;
-        limit?: number;
-    }
-) => {
+});
+const getMyIdeas = (creatorId, filters) => __awaiter(void 0, void 0, void 0, function* () {
     const { searchTerm, status, isPaid, page = 1, limit = 10 } = filters;
     const skip = (page - 1) * limit;
-
-    const where: Prisma.IdeaWhereInput = {
-        creatorId,
-        isDeleted: false,
-        ...(searchTerm && {
-            OR: [{ title: { contains: searchTerm, mode: "insensitive" } }, { description: { contains: searchTerm, mode: "insensitive" } }, { problemStatement: { contains: searchTerm, mode: "insensitive" } }, { proposedSolution: { contains: searchTerm, mode: "insensitive" } }],
-        }),
-        ...(status && { status: status as IdeaStatus }), // cast status to IdeaStatus enum
-        ...(typeof isPaid === "boolean" && { isPaid }),
-    };
-
-    const [ideas, total] = await Promise.all([
-        prisma.idea.findMany({
+    const where = Object.assign(Object.assign(Object.assign({ creatorId, isDeleted: false }, (searchTerm && {
+        OR: [{ title: { contains: searchTerm, mode: "insensitive" } }, { description: { contains: searchTerm, mode: "insensitive" } }, { problemStatement: { contains: searchTerm, mode: "insensitive" } }, { proposedSolution: { contains: searchTerm, mode: "insensitive" } }],
+    })), (status && { status: status })), (typeof isPaid === "boolean" && { isPaid }));
+    const [ideas, total] = yield Promise.all([
+        client_1.default.idea.findMany({
             where,
             include: {
                 categories: {
@@ -105,9 +97,8 @@ const getMyIdeas = async (
             skip,
             take: limit,
         }),
-        prisma.idea.count({ where }),
+        client_1.default.idea.count({ where }),
     ]);
-
     return {
         data: ideas,
         meta: {
@@ -116,10 +107,9 @@ const getMyIdeas = async (
             total,
         },
     };
-};
-
-const getSingleIdea = async (ideaId: string, userId: string) => {
-    const idea = await prisma.idea.findFirst({
+});
+const getSingleIdea = (ideaId, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const idea = yield client_1.default.idea.findFirst({
         where: {
             id: ideaId,
             creatorId: userId,
@@ -146,40 +136,23 @@ const getSingleIdea = async (ideaId: string, userId: string) => {
             },
         },
     });
-
     if (!idea) {
-        throw new AppError(404, "Idea not found");
+        throw new AppError_1.default(404, "Idea not found");
     }
-
     return idea;
-};
-
-const getAllIdeas = async (
-    filters: {
-        searchTerm?: string;
-        category?: string;
-        status?: string;
-        isPaid?: boolean;
-    },
-    paginationOptions: {
-        page?: number;
-        limit?: number;
-    }
-) => {
+});
+const getAllIdeas = (filters, paginationOptions) => __awaiter(void 0, void 0, void 0, function* () {
     const { searchTerm, category, status, isPaid } = filters;
     const page = Number(paginationOptions.page) || 1;
     const limit = Number(paginationOptions.limit) || 10;
     const skip = (page - 1) * limit;
-
-    const where: Prisma.IdeaWhereInput = {
+    const where = {
         status: "APPROVED",
         isDeleted: false,
     };
-
     if (searchTerm) {
         where.OR = [{ title: { contains: searchTerm, mode: "insensitive" } }, { problemStatement: { contains: searchTerm, mode: "insensitive" } }, { description: { contains: searchTerm, mode: "insensitive" } }];
     }
-
     if (category) {
         where.categories = {
             some: {
@@ -192,19 +165,15 @@ const getAllIdeas = async (
             },
         };
     }
-
     if (status) {
-        where.status = status as any;
+        where.status = status;
     }
-
     if (isPaid !== undefined) {
         where.isPaid = isPaid;
     }
-
     // Get total count of matching records
-    const total = await prisma.idea.count({ where });
-
-    const ideas = await prisma.idea.findMany({
+    const total = yield client_1.default.idea.count({ where });
+    const ideas = yield client_1.default.idea.findMany({
         where,
         include: {
             categories: {
@@ -232,7 +201,6 @@ const getAllIdeas = async (
         skip,
         take: limit,
     });
-
     return {
         data: ideas,
         meta: {
@@ -241,30 +209,9 @@ const getAllIdeas = async (
             total,
         },
     };
-};
-
-interface User {
-    id: string;
-    name: string;
-    email: string;
-    image: string | null;
-}
-
-interface Comment {
-    id: string;
-    content: string;
-    userId: string;
-    ideaId: string;
-    parentCommentId: string | null;
-    isDeleted: boolean;
-    createdAt: string;
-    updatedAt: string;
-    user: User;
-    replies: Comment[];
-}
-
-const getSingleIdeaPublic = async (id: string) => {
-    const idea = await prisma.idea.findUnique({
+});
+const getSingleIdeaPublic = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const idea = yield client_1.default.idea.findUnique({
         where: {
             id,
             isDeleted: false,
@@ -352,32 +299,22 @@ const getSingleIdeaPublic = async (id: string) => {
             },
         },
     });
-
     if (!idea) {
         throw new Error("Idea not found");
     }
-
-    const [filteredCommentCount] = await Promise.all([
-        prisma.comment.count({
+    const [filteredCommentCount] = yield Promise.all([
+        client_1.default.comment.count({
             where: {
                 ideaId: id,
                 isDeleted: false,
             },
         }),
     ]);
-
     const upvotes = idea.votes.filter((vote) => vote.type === "UPVOTE").length;
     const downvotes = idea.votes.filter((vote) => vote.type === "DOWNVOTE").length;
-
-    return {
-        ...idea,
-        upvotes,
-        downvotes,
-        commentCount: filteredCommentCount,
-        comments: idea.comments,
-    };
-};
-
+    return Object.assign(Object.assign({}, idea), { upvotes,
+        downvotes, commentCount: filteredCommentCount, comments: idea.comments });
+});
 // const getSingleIdeaPublic = async (id: string) => {
 //     const idea = await prisma.idea.findUnique({
 //         where: {
@@ -460,11 +397,9 @@ const getSingleIdeaPublic = async (id: string) => {
 //             },
 //         },
 //     });
-
 //     if (!idea) {
 //         throw new Error("Idea not found");
 //     }
-
 //     // Filtered counts
 //     const [filteredCommentCount, totalVoteCount] = await Promise.all([
 //         prisma.comment.count({
@@ -479,10 +414,8 @@ const getSingleIdeaPublic = async (id: string) => {
 //             },
 //         }),
 //     ]);
-
 //     const upvotes = idea.votes.filter((vote) => vote.type === "UPVOTE").length;
 //     const downvotes = idea.votes.filter((vote) => vote.type === "DOWNVOTE").length;
-
 //     return {
 //         ...idea,
 //         upvotes,
@@ -492,44 +425,23 @@ const getSingleIdeaPublic = async (id: string) => {
 //         comments: idea.comments,
 //     };
 // };
-
-const updateIdea = async (
-    ideaId: string,
-    data: {
-        title?: string;
-        problemStatement?: string;
-        proposedSolution?: string;
-        description?: string;
-        images?: string[];
-        isPaid?: boolean;
-        price?: number | null;
-        categoryIds?: string[];
-        status?: IdeaStatus;
-    },
-    userId: string,
-    userRole: string
-) => {
-    const existingIdea = await prisma.idea.findFirst({
+const updateIdea = (ideaId, data, userId, userRole) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingIdea = yield client_1.default.idea.findFirst({
         where: {
             id: ideaId,
             isDeleted: false,
         },
         include: { creator: true },
     });
-
     console.log(existingIdea);
-
     if (!existingIdea) {
-        throw new AppError(404, "Idea not found");
+        throw new AppError_1.default(404, "Idea not found");
     }
-
     const isOwner = existingIdea.creatorId === userId;
     const isAdmin = userRole === "ADMIN";
-
     if (!isOwner && !isAdmin) {
-        throw new AppError(403, "You can only edit your own ideas");
+        throw new AppError_1.default(403, "You can only edit your own ideas");
     }
-
     let categoryUpdates = {};
     if (data.categoryIds) {
         categoryUpdates = {
@@ -541,25 +453,15 @@ const updateIdea = async (
             },
         };
     }
-
     const { title, description, problemStatement, proposedSolution, status, images } = data;
-
     const isActuallyPaid = data.isPaid && data.price !== null && data.price !== 0;
     const actualPrice = isActuallyPaid ? data.price : null;
-
-    return await prisma.idea.update({
+    return yield client_1.default.idea.update({
         where: { id: ideaId },
-        data: {
-            title,
-            description: description?.trim(),
-            problemStatement,
+        data: Object.assign({ title, description: description === null || description === void 0 ? void 0 : description.trim(), problemStatement,
             proposedSolution,
             status,
-            images,
-            isPaid: isActuallyPaid,
-            price: actualPrice,
-            ...categoryUpdates,
-        },
+            images, isPaid: isActuallyPaid, price: actualPrice }, categoryUpdates),
         include: {
             categories: {
                 include: {
@@ -575,46 +477,37 @@ const updateIdea = async (
             },
         },
     });
-};
-
-const deleteIdea = async (ideaId: string, userId: string, userRole: string) => {
-    const existingIdea = await prisma.idea.findFirst({
+});
+const deleteIdea = (ideaId, userId, userRole) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingIdea = yield client_1.default.idea.findFirst({
         where: {
             id: ideaId,
             isDeleted: false,
         },
     });
-
     if (!existingIdea) {
-        throw new AppError(404, "Idea not found");
+        throw new AppError_1.default(404, "Idea not found");
     }
-
     if (existingIdea.creatorId !== userId && userRole !== "ADMIN") {
-        throw new AppError(403, "You can only delete your own ideas");
+        throw new AppError_1.default(403, "You can only delete your own ideas");
     }
-
-    return await prisma.idea.update({
+    return yield client_1.default.idea.update({
         where: { id: ideaId },
         data: {
             isDeleted: true,
         },
     });
-};
-
+});
 // admin get
-
-const getIdeasForAdmin = async (filters: any, pagination: any) => {
+const getIdeasForAdmin = (filters, pagination) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit } = pagination;
     const skip = (page - 1) * limit;
-
-    const where: Prisma.IdeaWhereInput = {
+    const where = {
         isDeleted: false,
     };
-
     if (filters.searchTerm) {
         where.OR = [{ title: { contains: filters.searchTerm, mode: "insensitive" } }, { description: { contains: filters.searchTerm, mode: "insensitive" } }];
     }
-
     if (filters.category && filters.category !== "ALL") {
         where.categories = {
             some: {
@@ -624,16 +517,13 @@ const getIdeasForAdmin = async (filters: any, pagination: any) => {
             },
         };
     }
-
     if (filters.status && filters.status !== "ALL") {
         where.status = filters.status;
     }
-
     if (filters.isPaid !== undefined) {
         where.isPaid = filters.isPaid;
     }
-
-    const ideas = await prisma.idea.findMany({
+    const ideas = yield client_1.default.idea.findMany({
         where,
         include: {
             categories: {
@@ -655,9 +545,7 @@ const getIdeasForAdmin = async (filters: any, pagination: any) => {
             createdAt: "desc",
         },
     });
-
-    const total = await prisma.idea.count({ where });
-
+    const total = yield client_1.default.idea.count({ where });
     return {
         data: ideas,
         meta: {
@@ -666,10 +554,9 @@ const getIdeasForAdmin = async (filters: any, pagination: any) => {
             total,
         },
     };
-};
-
-const getSingleIdeaForAdmin = async (id: string) => {
-    const idea = await prisma.idea.findUnique({
+});
+const getSingleIdeaForAdmin = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const idea = yield client_1.default.idea.findUnique({
         where: {
             id,
             isDeleted: false,
@@ -695,29 +582,21 @@ const getSingleIdeaForAdmin = async (id: string) => {
             },
         },
     });
-
     if (!idea) {
-        throw new AppError(404, "Idea not found");
+        throw new AppError_1.default(404, "Idea not found");
     }
-
     return idea;
-};
-
-const updateIdeaStatus = async (
-    id: string,
-    status: IdeaStatus,
-    rejectionFeedback?: string // Add optional parameter
-) => {
-    if (!Object.values(IdeaStatus).includes(status)) {
-        throw new AppError(404, "Invalid status value");
+});
+const updateIdeaStatus = (id, status, rejectionFeedback // Add optional parameter
+) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!Object.values(prisma_1.IdeaStatus).includes(status)) {
+        throw new AppError_1.default(404, "Invalid status value");
     }
-
-    const updateData: any = { status };
+    const updateData = { status };
     if (status === "REJECTED" && rejectionFeedback) {
         updateData.rejectionFeedback = rejectionFeedback;
     }
-
-    const idea = await prisma.idea.update({
+    const idea = yield client_1.default.idea.update({
         where: { id },
         data: updateData,
         include: {
@@ -730,11 +609,9 @@ const updateIdeaStatus = async (
             },
         },
     });
-
     return idea;
-};
-
-export const ideaService = {
+});
+exports.ideaService = {
     createIdea,
     getMyIdeas,
     getSingleIdea,

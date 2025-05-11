@@ -71,9 +71,29 @@ const getRealPurchases = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getMyPurchasedIdeas = catchAsync(async (req: Request, res: Response) => {
+    const userId = req.user?.id;
+
+    if (!userId) {
+        throw new AppError(401, "Authentication required");
+    }
+
+    const purchasedIdeas = await paymentService.getMyPurchasedIdeas(userId);
+
+    // console.log(purchasedIdeas);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Purchased ideas retrieved successfully",
+        data: purchasedIdeas,
+    });
+});
+
 export const paymentController = {
     createOrder,
     verifyPayment,
     getAllPaymentsForAdmin,
     getRealPurchases,
+    getMyPurchasedIdeas,
 };

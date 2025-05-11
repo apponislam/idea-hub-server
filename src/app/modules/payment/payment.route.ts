@@ -9,6 +9,7 @@ router.get("/verify", paymentController.verifyPayment);
 
 router.get("/paymentsAdmin", auth(), paymentController.getAllPaymentsForAdmin);
 
+router.get("/my-purchases", auth(), paymentController.getMyPurchasedIdeas);
 router.get("/my-purchases/:ideaId", auth(), paymentController.getRealPurchases);
 
 export const paymentRoutes = router;
