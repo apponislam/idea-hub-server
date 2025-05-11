@@ -80,6 +80,21 @@ const getAllIdeas = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getSingleIdeaPublic = catchAsync(async (req: Request, res: Response) => {
+    const { ideaid } = req.params;
+
+    console.log(ideaid);
+
+    const idea = await ideaService.getSingleIdeaPublic(ideaid);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Idea retrieved successfully",
+        data: idea,
+    });
+});
+
 const updateIdea = catchAsync(async (req: Request, res: Response) => {
     if (!req.user) {
         throw new AppError(401, "Unauthorized");
@@ -140,6 +155,23 @@ const getIdeasForAdmin = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getSingleIdeaForAdmin = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!req.user || req.user.role !== "ADMIN") {
+        throw new AppError(403, "You are not authorized to view this idea");
+    }
+
+    const idea = await ideaService.getSingleIdeaForAdmin(id);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Idea retrieved successfully",
+        data: idea,
+    });
+});
+
 const updateIdeaStatus = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
     const { status, rejectionFeedback } = req.body; // Add rejectionFeedback
@@ -177,8 +209,10 @@ export const ideaController = {
     getMyIdeas,
     getSingleIdea,
     getAllIdeas,
+    getSingleIdeaPublic,
     updateIdea,
     deleteIdea,
     getIdeasForAdmin,
+    getSingleIdeaForAdmin,
     updateIdeaStatus,
 };
