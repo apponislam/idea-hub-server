@@ -84,7 +84,7 @@ The application is live at: [https://idea-hub-server.vercel.app/](https://idea-h
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/IdeaHub.git
+git clone https://github.com/apponislam/idea-hub-server.git
 
 # Navigate to the project directory
 cd IdeaHub
