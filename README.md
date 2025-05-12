@@ -16,6 +16,10 @@ IdeaHub is a full-stack web application that allows users to share, vote, and co
 
 The application is live at: [https://idea-hub-server.vercel.app/](https://idea-hub-server.vercel.app/)
 
+## Database Schema
+
+![Database Diagram](https://i.ibb.co.com/j9PQq4T6/Blank-diagram.png)
+
 ## API Endpoints
 
 ### Authentication
