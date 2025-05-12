@@ -28,6 +28,11 @@ const createUser = async (data: { name: string; email: string; password: string;
 
 const getAllUsers = async () => {
     return await prisma.user.findMany({
+        where: {
+            status: {
+                in: ["ACTIVE", "BLOCKED"],
+            },
+        },
         select: {
             id: true,
             name: true,

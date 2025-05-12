@@ -39,6 +39,11 @@ const createUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     return yield client_1.default.user.findMany({
+        where: {
+            status: {
+                in: ["ACTIVE", "BLOCKED"],
+            },
+        },
         select: {
             id: true,
             name: true,
