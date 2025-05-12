@@ -67,7 +67,7 @@ const deactivateUser = catchAsync(async (req: Request, res: Response) => {
 
 const deleteUser = catchAsync(async (req: Request, res: Response) => {
     const { userId } = req.params;
-    const user = await userService.deactivateUser(userId);
+    const user = await userService.deleteUser(userId);
     sendResponse(res, {
         statusCode: 200,
         success: true,
