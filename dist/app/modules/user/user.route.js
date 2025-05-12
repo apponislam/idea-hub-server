@@ -13,5 +13,5 @@ router.get("/", (0, auth_1.default)(), user_controller_1.userController.getAllUs
 router.patch("/:userId/role", (0, auth_1.default)(), user_controller_1.userController.updateUserRole);
 router.patch("/:userId/activate", (0, auth_1.default)(), user_controller_1.userController.activateUser);
 router.patch("/:userId/deactivate", (0, auth_1.default)(), user_controller_1.userController.deactivateUser);
-router.patch("/:userId/delete", (0, auth_1.default)(), user_controller_1.userController.deleteUser);
+router.delete("/:userId/delete", (0, auth_1.default)(), user_controller_1.userController.deleteUser);
 exports.userRoute = router;
