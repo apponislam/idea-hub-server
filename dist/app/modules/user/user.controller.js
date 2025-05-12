@@ -72,7 +72,7 @@ const deactivateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0,
 }));
 const deleteUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
-    const user = yield user_service_1.userService.deactivateUser(userId);
+    const user = yield user_service_1.userService.deleteUser(userId);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
         success: true,
