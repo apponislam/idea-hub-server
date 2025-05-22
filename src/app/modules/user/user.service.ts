@@ -63,7 +63,16 @@ const getUser = async (id: string) => {
             role: true,
             status: true,
             createdAt: true,
+            updatedAt: true,
             image: true,
+            _count: {
+                select: {
+                    ideas: true,
+                    votes: true,
+                    comments: true,
+                    payments: true,
+                },
+            },
         },
     });
 };

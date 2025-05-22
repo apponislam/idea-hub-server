@@ -73,7 +73,16 @@ const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
             role: true,
             status: true,
             createdAt: true,
+            updatedAt: true,
             image: true,
+            _count: {
+                select: {
+                    ideas: true,
+                    votes: true,
+                    comments: true,
+                    payments: true,
+                },
+            },
         },
     });
 });
