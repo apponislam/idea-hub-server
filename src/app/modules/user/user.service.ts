@@ -48,6 +48,26 @@ const getAllUsers = async () => {
     });
 };
 
+const getUser = async (id: string) => {
+    return await prisma.user.findUniqueOrThrow({
+        where: {
+            id,
+            status: {
+                in: ["ACTIVE", "BLOCKED"],
+            },
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            status: true,
+            createdAt: true,
+            image: true,
+        },
+    });
+};
+
 const updateUserRole = async (userId: string, role: Role) => {
     return await prisma.user.update({
         where: { id: userId },
@@ -104,6 +124,7 @@ const deleteUser = async (userId: string) => {
 export const userService = {
     createUser,
     getAllUsers,
+    getUser,
     updateUserRole,
     activateUser,
     deactivateUser,
