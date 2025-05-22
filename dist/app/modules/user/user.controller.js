@@ -36,6 +36,16 @@ const getAllUsers = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data: users,
     });
 }));
+const getUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const user = yield user_service_1.userService.getUser(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: 200,
+        success: true,
+        message: "User retrieved successfully",
+        data: user,
+    });
+}));
 const updateUserRole = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const { role } = req.body;
@@ -83,6 +93,7 @@ const deleteUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 exports.userController = {
     createUser,
     getAllUsers,
+    getUser,
     updateUserRole,
     activateUser,
     deactivateUser,

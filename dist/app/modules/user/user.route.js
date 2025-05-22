@@ -10,6 +10,7 @@ const auth_1 = __importDefault(require("../../middlewares/auth"));
 const router = express_1.default.Router();
 router.post("/register", user_controller_1.userController.createUser);
 router.get("/", (0, auth_1.default)(), user_controller_1.userController.getAllUsers);
+router.get("/:id", (0, auth_1.default)(), user_controller_1.userController.getUser);
 router.patch("/:userId/role", (0, auth_1.default)(), user_controller_1.userController.updateUserRole);
 router.patch("/:userId/activate", (0, auth_1.default)(), user_controller_1.userController.activateUser);
 router.patch("/:userId/deactivate", (0, auth_1.default)(), user_controller_1.userController.deactivateUser);

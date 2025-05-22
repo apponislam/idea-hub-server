@@ -58,6 +58,25 @@ const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
         },
     });
 });
+const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield client_1.default.user.findUniqueOrThrow({
+        where: {
+            id,
+            status: {
+                in: ["ACTIVE", "BLOCKED"],
+            },
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            status: true,
+            createdAt: true,
+            image: true,
+        },
+    });
+});
 const updateUserRole = (userId, role) => __awaiter(void 0, void 0, void 0, function* () {
     return yield client_1.default.user.update({
         where: { id: userId },
@@ -110,6 +129,7 @@ const deleteUser = (userId) => __awaiter(void 0, void 0, void 0, function* () {
 exports.userService = {
     createUser,
     getAllUsers,
+    getUser,
     updateUserRole,
     activateUser,
     deactivateUser,
