@@ -50,6 +50,7 @@ model User {
   votes         Vote[]
   comments      Comment[]
   payments      Payment[]
+  blogs         Blog[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
@@ -138,4 +139,25 @@ enum PaymentStatus {
   PAID
   REFUNDED
   CANCELLED
+}
+
+
+model Blog {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  excerpt     String
+  coverImage  String
+  category    String
+  tags        String[]
+  publishedAt DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  views       Int      @default(0)
+  isDeleted   Boolean  @default(false)
+  seo         Json
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+
+  @@index([isDeleted])
 }
