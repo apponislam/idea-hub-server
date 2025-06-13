@@ -190,9 +190,30 @@ exports.Prisma.PaymentScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.BlogScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  content: 'content',
+  excerpt: 'excerpt',
+  coverImage: 'coverImage',
+  category: 'category',
+  tags: 'tags',
+  publishedAt: 'publishedAt',
+  updatedAt: 'updatedAt',
+  views: 'views',
+  isDeleted: 'isDeleted',
+  seo: 'seo',
+  authorId: 'authorId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -203,6 +224,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.Role = exports.$Enums.Role = {
   MEMBER: 'MEMBER',
@@ -243,7 +270,8 @@ exports.Prisma.ModelName = {
   IdeaCategory: 'IdeaCategory',
   Vote: 'Vote',
   Comment: 'Comment',
-  Payment: 'Payment'
+  Payment: 'Payment',
+  Blog: 'Blog'
 };
 
 /**
