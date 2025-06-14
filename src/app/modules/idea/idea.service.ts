@@ -517,7 +517,7 @@ const updateIdea = async (
         include: { creator: true },
     });
 
-    console.log(existingIdea);
+    // console.log(existingIdea);
 
     if (!existingIdea) {
         throw new AppError(404, "Idea not found");

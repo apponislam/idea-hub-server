@@ -22,8 +22,8 @@ const createOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         throw new AppError_1.default(401, "You are unauthorized");
     }
     const userid = req.user.id;
-    console.log(userid);
-    console.log(req.body.id);
+    // console.log(userid);
+    // console.log(req.body.id);
     const order = yield payment_service_1.paymentService.createPayment(userid, req.body.id, req.ip);
     (0, sendResponse_1.default)(res, {
         statusCode: 201,
@@ -33,7 +33,7 @@ const createOrder = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
     });
 }));
 const verifyPayment = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("hii");
+    // console.log("hii");
     const order = yield payment_service_1.paymentService.verifyPayment(req.query.order_id);
     (0, sendResponse_1.default)(res, {
         statusCode: 201,

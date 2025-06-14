@@ -83,7 +83,7 @@ const getAllIdeas = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
 }));
 const getSingleIdeaPublic = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { ideaid } = req.params;
-    console.log(ideaid);
+    // console.log(ideaid);
     const idea = yield idea_service_1.ideaService.getSingleIdeaPublic(ideaid);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
@@ -98,7 +98,7 @@ const updateIdea = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
     }
     // console.log(req.body);
     const idea = yield idea_service_1.ideaService.updateIdea(req.params.id, req.body, req.user.id, req.user.role);
-    console.log(idea);
+    // console.log(idea);
     (0, sendResponse_1.default)(res, {
         statusCode: 200,
         success: true,

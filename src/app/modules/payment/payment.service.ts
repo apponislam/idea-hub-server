@@ -28,7 +28,7 @@ const createPayment = async (userId: string, ideaId: string, client_ip: string) 
         throw new AppError(404, "User Not Found");
     }
 
-    console.log("new", mainIdea);
+    // console.log("new", mainIdea);
 
     const shurjopayPayload = {
         amount: mainIdea.price,
