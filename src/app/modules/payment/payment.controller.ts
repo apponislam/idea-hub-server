@@ -11,8 +11,8 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
 
     const userid = req.user.id;
 
-    console.log(userid);
-    console.log(req.body.id);
+    // console.log(userid);
+    // console.log(req.body.id);
 
     const order = await paymentService.createPayment(userid, req.body.id, req.ip!);
 
@@ -25,7 +25,7 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
 });
 
 const verifyPayment = catchAsync(async (req, res) => {
-    console.log("hii");
+    // console.log("hii");
 
     const order = await paymentService.verifyPayment(req.query.order_id as string);
 

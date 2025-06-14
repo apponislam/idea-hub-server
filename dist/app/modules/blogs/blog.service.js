@@ -1,20 +1,22 @@
-import prisma from "../../../prisma/client";
-import AppError from "../../error/AppError";
-
-const createBlog = async (data: {
-    title: string;
-    content: string;
-    excerpt: string;
-    coverImage: string;
-    category: string;
-    tags: string[];
-    seo: {
-        description: string;
-        keywords: string[];
-    };
-    authorId: string;
-}) => {
-    const blog = await prisma.blog.create({
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.blogService = void 0;
+const client_1 = __importDefault(require("../../../prisma/client"));
+const AppError_1 = __importDefault(require("../../error/AppError"));
+const createBlog = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const blog = yield client_1.default.blog.create({
         data: {
             title: data.title,
             content: data.content,
@@ -36,37 +38,23 @@ const createBlog = async (data: {
             },
         },
     });
-
     return blog;
-};
-
-const getMyBlogs = async (
-    authorId: string,
-    filters: {
-        searchTerm?: string;
-        category?: string;
-        page?: number;
-        limit?: number;
-    }
-) => {
+});
+const getMyBlogs = (authorId, filters) => __awaiter(void 0, void 0, void 0, function* () {
     const { searchTerm, category, page = 1, limit = 10 } = filters;
     const skip = (page - 1) * limit;
-
-    const where: any = {
+    const where = {
         authorId,
         isDeleted: false,
     };
-
     if (searchTerm) {
         where.OR = [{ title: { contains: searchTerm, mode: "insensitive" } }, { content: { contains: searchTerm, mode: "insensitive" } }, { excerpt: { contains: searchTerm, mode: "insensitive" } }];
     }
-
     if (category) {
         where.category = category;
     }
-
-    const [blogs, total] = await Promise.all([
-        prisma.blog.findMany({
+    const [blogs, total] = yield Promise.all([
+        client_1.default.blog.findMany({
             where,
             include: {
                 author: {
@@ -84,9 +72,8 @@ const getMyBlogs = async (
             skip,
             take: limit,
         }),
-        prisma.blog.count({ where }),
+        client_1.default.blog.count({ where }),
     ]);
-
     return {
         data: blogs,
         meta: {
@@ -95,10 +82,9 @@ const getMyBlogs = async (
             total,
         },
     };
-};
-
-const getSingleBlog = async (blogId: string, userId: string) => {
-    const blog = await prisma.blog.findFirst({
+});
+const getSingleBlog = (blogId, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const blog = yield client_1.default.blog.findFirst({
         where: {
             id: blogId,
             authorId: userId,
@@ -115,43 +101,27 @@ const getSingleBlog = async (blogId: string, userId: string) => {
             },
         },
     });
-
     if (!blog) {
-        throw new AppError(404, "Blog not found");
+        throw new AppError_1.default(404, "Blog not found");
     }
-
     return blog;
-};
-
-const getAllBlogs = async (
-    filters: {
-        searchTerm?: string;
-        category?: string;
-    },
-    paginationOptions: {
-        page?: number;
-        limit?: number;
-    }
-) => {
+});
+const getAllBlogs = (filters, paginationOptions) => __awaiter(void 0, void 0, void 0, function* () {
     const { searchTerm, category } = filters;
     const page = Number(paginationOptions.page) || 1;
     const limit = Number(paginationOptions.limit) || 10;
     const skip = (page - 1) * limit;
-
-    const where: any = {
+    const where = {
         isDeleted: false,
     };
-
     if (searchTerm) {
         where.OR = [{ title: { contains: searchTerm, mode: "insensitive" } }, { content: { contains: searchTerm, mode: "insensitive" } }, { excerpt: { contains: searchTerm, mode: "insensitive" } }];
     }
-
     if (category) {
         where.category = category;
     }
-
-    const [blogs, total] = await Promise.all([
-        prisma.blog.findMany({
+    const [blogs, total] = yield Promise.all([
+        client_1.default.blog.findMany({
             where,
             include: {
                 author: {
@@ -169,9 +139,8 @@ const getAllBlogs = async (
             skip,
             take: limit,
         }),
-        prisma.blog.count({ where }),
+        client_1.default.blog.count({ where }),
     ]);
-
     return {
         data: blogs,
         meta: {
@@ -180,10 +149,9 @@ const getAllBlogs = async (
             total,
         },
     };
-};
-
-const getSingleBlogPublic = async (blogId: string) => {
-    const blog = await prisma.blog.findFirst({
+});
+const getSingleBlogPublic = (blogId) => __awaiter(void 0, void 0, void 0, function* () {
+    const blog = yield client_1.default.blog.findFirst({
         where: {
             id: blogId,
             isDeleted: false,
@@ -199,63 +167,36 @@ const getSingleBlogPublic = async (blogId: string) => {
             },
         },
     });
-
     if (!blog) {
-        throw new AppError(404, "Blog not found");
+        throw new AppError_1.default(404, "Blog not found");
     }
-
     // Increment view count
-    await prisma.blog.update({
+    yield client_1.default.blog.update({
         where: { id: blogId },
         data: {
             views: { increment: 1 },
         },
     });
-
     return blog;
-};
-
-const updateBlog = async (
-    blogId: string,
-    data: {
-        title?: string;
-        content?: string;
-        excerpt?: string;
-        coverImage?: string;
-        category?: string;
-        tags?: string[];
-        seo?: {
-            description: string;
-            keywords: string[];
-        };
-    },
-    userId: string,
-    userRole: string
-) => {
-    const existingBlog = await prisma.blog.findFirst({
+});
+const updateBlog = (blogId, data, userId, userRole) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingBlog = yield client_1.default.blog.findFirst({
         where: {
             id: blogId,
             isDeleted: false,
         },
     });
-
     if (!existingBlog) {
-        throw new AppError(404, "Blog not found");
+        throw new AppError_1.default(404, "Blog not found");
     }
-
     const isOwner = existingBlog.authorId === userId;
     const isAdmin = userRole === "ADMIN";
-
     if (!isOwner && !isAdmin) {
-        throw new AppError(403, "You can only edit your own blogs");
+        throw new AppError_1.default(403, "You can only edit your own blogs");
     }
-
-    return await prisma.blog.update({
+    return yield client_1.default.blog.update({
         where: { id: blogId },
-        data: {
-            ...data,
-            updatedAt: new Date(),
-        },
+        data: Object.assign(Object.assign({}, data), { updatedAt: new Date() }),
         include: {
             author: {
                 select: {
@@ -267,64 +208,45 @@ const updateBlog = async (
             },
         },
     });
-};
-
-const deleteBlog = async (blogId: string, userId: string, userRole: string) => {
-    const existingBlog = await prisma.blog.findFirst({
+});
+const deleteBlog = (blogId, userId, userRole) => __awaiter(void 0, void 0, void 0, function* () {
+    const existingBlog = yield client_1.default.blog.findFirst({
         where: {
             id: blogId,
             isDeleted: false,
         },
     });
-
     if (!existingBlog) {
-        throw new AppError(404, "Blog not found");
+        throw new AppError_1.default(404, "Blog not found");
     }
-
     const isOwner = existingBlog.authorId === userId;
     const isAdmin = userRole === "ADMIN";
-
     if (!isOwner && !isAdmin) {
-        throw new AppError(403, "You can only delete your own blogs");
+        throw new AppError_1.default(403, "You can only delete your own blogs");
     }
-
-    return await prisma.blog.update({
+    return yield client_1.default.blog.update({
         where: { id: blogId },
         data: {
             isDeleted: true,
             updatedAt: new Date(),
         },
     });
-};
-
+});
 // Admin services
-const getBlogsForAdmin = async (
-    filters: {
-        searchTerm?: string;
-        category?: string;
-    },
-    pagination: {
-        page?: number;
-        limit?: number;
-    }
-) => {
+const getBlogsForAdmin = (filters, pagination) => __awaiter(void 0, void 0, void 0, function* () {
     const { searchTerm, category } = filters;
     const page = Number(pagination.page) || 1;
     const limit = Number(pagination.limit) || 10;
     const skip = (page - 1) * limit;
-
-    const where: any = { isDeleted: false };
-
+    const where = { isDeleted: false };
     if (searchTerm) {
         where.OR = [{ title: { contains: searchTerm, mode: "insensitive" } }, { content: { contains: searchTerm, mode: "insensitive" } }, { excerpt: { contains: searchTerm, mode: "insensitive" } }];
     }
-
     if (category) {
         where.category = category;
     }
-
-    const [blogs, total] = await Promise.all([
-        prisma.blog.findMany({
+    const [blogs, total] = yield Promise.all([
+        client_1.default.blog.findMany({
             where,
             include: {
                 author: {
@@ -342,9 +264,8 @@ const getBlogsForAdmin = async (
             skip,
             take: limit,
         }),
-        prisma.blog.count({ where }),
+        client_1.default.blog.count({ where }),
     ]);
-
     return {
         data: blogs,
         meta: {
@@ -353,10 +274,9 @@ const getBlogsForAdmin = async (
             total,
         },
     };
-};
-
-const getSingleBlogForAdmin = async (blogId: string) => {
-    const blog = await prisma.blog.findUnique({
+});
+const getSingleBlogForAdmin = (blogId) => __awaiter(void 0, void 0, void 0, function* () {
+    const blog = yield client_1.default.blog.findUnique({
         where: { id: blogId },
         include: {
             author: {
@@ -369,15 +289,12 @@ const getSingleBlogForAdmin = async (blogId: string) => {
             },
         },
     });
-
     if (!blog) {
-        throw new AppError(404, "Blog not found");
+        throw new AppError_1.default(404, "Blog not found");
     }
-
     return blog;
-};
-
-export const blogService = {
+});
+exports.blogService = {
     createBlog,
     getMyBlogs,
     getSingleBlog,

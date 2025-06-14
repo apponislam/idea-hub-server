@@ -89,7 +89,7 @@ const getAllIdeas = catchAsync(async (req: Request, res: Response) => {
 const getSingleIdeaPublic = catchAsync(async (req: Request, res: Response) => {
     const { ideaid } = req.params;
 
-    console.log(ideaid);
+    // console.log(ideaid);
 
     const idea = await ideaService.getSingleIdeaPublic(ideaid);
 
@@ -110,7 +110,7 @@ const updateIdea = catchAsync(async (req: Request, res: Response) => {
 
     const idea = await ideaService.updateIdea(req.params.id, req.body, req.user.id, req.user.role);
 
-    console.log(idea);
+    // console.log(idea);
 
     sendResponse(res, {
         statusCode: 200,

@@ -38,7 +38,7 @@ const createPayment = (userId, ideaId, client_ip) => __awaiter(void 0, void 0, v
     if (!userData) {
         throw new AppError_1.default(404, "User Not Found");
     }
-    console.log("new", mainIdea);
+    // console.log("new", mainIdea);
     const shurjopayPayload = {
         amount: mainIdea.price,
         order_id: mainIdea.id,

@@ -433,7 +433,7 @@ const updateIdea = (ideaId, data, userId, userRole) => __awaiter(void 0, void 0,
         },
         include: { creator: true },
     });
-    console.log(existingIdea);
+    // console.log(existingIdea);
     if (!existingIdea) {
         throw new AppError_1.default(404, "Idea not found");
     }
