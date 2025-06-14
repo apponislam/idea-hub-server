@@ -71,6 +71,11 @@ const getUser = async (id: string) => {
                     votes: true,
                     comments: true,
                     payments: true,
+                    blogs: {
+                        where: {
+                            isDeleted: false,
+                        },
+                    },
                 },
             },
         },

@@ -288,7 +288,7 @@ const config = {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://postgres:apponsql@localhost:5432/ideahub?schema=public"
+        "value": "postgresql://idea_hub_hktm_user:NV9zWzP2WQhvsFHEbldtU5UnuEiqX3na@dpg-d16mjkumcj7s73cb1120-a.oregon-postgres.render.com/idea_hub_hktm?schema=public"
       }
     }
   },

@@ -81,6 +81,11 @@ const getUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
                     votes: true,
                     comments: true,
                     payments: true,
+                    blogs: {
+                        where: {
+                            isDeleted: false,
+                        },
+                    },
                 },
             },
         },
