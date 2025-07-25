@@ -8,6 +8,7 @@ const express_1 = __importDefault(require("express"));
 const blog_controller_1 = require("./blog.controller");
 const auth_1 = __importDefault(require("../../middlewares/auth"));
 const router = express_1.default.Router();
+// routes
 router.post("/", (0, auth_1.default)(), blog_controller_1.blogController.createBlog);
 router.get("/public/:blogId", blog_controller_1.blogController.getSingleBlogPublic);
 router.get("/my-blogs", (0, auth_1.default)(), blog_controller_1.blogController.getMyBlogs);

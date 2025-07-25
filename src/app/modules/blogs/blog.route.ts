@@ -3,7 +3,7 @@ import { blogController } from "./blog.controller";
 import auth from "../../middlewares/auth";
 
 const router = express.Router();
-
+// routes
 router.post("/", auth(), blogController.createBlog);
 router.get("/public/:blogId", blogController.getSingleBlogPublic);
 router.get("/my-blogs", auth(), blogController.getMyBlogs);
