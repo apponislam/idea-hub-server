@@ -288,7 +288,7 @@ const config = {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": "postgresql://idea_hub_hktm_user:NV9zWzP2WQhvsFHEbldtU5UnuEiqX3na@dpg-d16mjkumcj7s73cb1120-a.oregon-postgres.render.com/idea_hub_hktm?schema=public"
+        "value": "postgresql://idea_hub_j2lw_user:XeSNze4tubvJTdPkI6D4BKrgFZlDdEed@dpg-d21t3dnfte5s7381odt0-a.oregon-postgres.render.com/idea_hub_j2lw?schema=public"
       }
     }
   },
